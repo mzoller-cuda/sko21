@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "value": "itsrootanyway"
+        },
+        "adminPassword": {
+            "value": "Ziosch17$Ziosch17$"
+        },
+        "firewallDiskVhdUri": {
+            "value": "https://cudacgfbuild2019.blob.core.windows.net/vhds/CudaCGFHourly-v802-0119-20191217.vhd"
+        },
+        "firewallName" :{
+            "value" : "CGF802"
+        },
+        "addressPrefix": {
+            "value": "10.200.0.0/16"
+        },
+        "fwSubnetPrefix": {
+            "value": "10.200.10.0/24"
+        },
+        "fwSubnetPrefix2": {
+            "value": "10.200.11.0/24"
+        },
+        "fwSubnetPrefix3": {
+            "value": "10.200.12.0/24"
+        },
+        "clientSubnetPrefix": {
+            "value": "10.200.0.0/24"
+        },
+        "fwPrivateIP": {
+            "value": "10.200.10.10"
+        },
+        "fwPrivateIP2": {
+            "value": "10.200.11.10"
+        },
+        "fwPrivateIP3": {
+            "value": "10.200.12.10"
+        }
+    }
+}

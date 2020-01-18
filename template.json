@@ -1,0 +1,414 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "User name for the Virtual Machine."
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine."
+            }
+        },
+        "firewallName": {
+            "type": "string",
+            "defaultValue": "CGF",
+            "metadata": {
+                "description": "Name for the firewall VM"
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        },
+        "firewallDiskVhdUri": {
+            "type": "string",
+            "metadata": {
+                "description": "Uri of the your firewall image"
+            }
+        },
+        "vmSize": {
+            "type": "string",
+            "defaultValue": "Standard_DS3_v2",
+            "allowedValues": [
+                "Standard_F1s",
+                "Standard_F2s",
+                "Standard_F4s",
+                "Standard_F8s",
+                "Standard_B2s",
+                "Standard_DS3_v2"
+            ],
+            "metadata": {
+                "description": "VM size"
+            }
+        },
+        "addressPrefix": {
+            "type": "string",
+            "defaultValue": "10.100.0.0/16",
+            "metadata": {
+                "description": "Address prefix for the virtual network"
+            }
+        },
+        "fwSubnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Address prefix for the virtual network"
+            }
+        },
+        "fwSubnetPrefix2": {
+            "type": "string",
+            "metadata": {
+                "description": "Address prefix for the virtual network"
+            }
+        },
+         "fwSubnetPrefix3": {
+            "type": "string",
+            "metadata": {
+                "description": "Address prefix for the virtual network"
+            }
+        },
+        "clientSubnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Address prefix for the virtual network"
+            }
+        },
+        "fwPrivateIP": {
+            "type": "string",
+            "metadata": {
+                "description": "Address prefix for the virtual network"
+            }
+        },
+        "fwPrivateIP2": {
+            "type": "string",
+            "metadata": {
+                "description": "Address prefix for the virtual network"
+            }
+        },
+        "fwPrivateIP3": {
+            "type": "string",
+            "metadata": {
+                "description": "Address prefix for the virtual network"
+            }
+        }
+    },
+    "variables": {
+        "fwNicName": "FwNic",
+        "fwNicName2": "FwNic2",
+        "fwNicName3": "FwNic3",
+        "fwSubnetName": "FWSubnet",
+        "fwSubnetName2": "FWSubnet2",
+        "fwSubnetName3": "FWSubnet3",
+        "clientSubnetName": "ClientSubnet",
+        "storageAccountName": "[concat('mzdiag', uniquestring(resourceGroup().id))]",
+        "storageAccountSkuName": "Standard_LRS",
+        "storageAccountSkuType": "Premium",
+        "storageAccountKind": "Storage",
+        "publicIPAddressName": "myPublicIP",
+        "publicIPAddressName2": "myPublicIP2",
+        "publicIPAddressName3": "myPublicIP3",
+        "publicIPAddressType": "Static",
+        "vmFWName": "[parameters('firewallName')]",
+        "virtualNetworkName": "mz-VNET",
+        "cgfImageName": "fwimage",
+        "AVsetname": "cgfAVset",
+        "routeTableName": "routeTable",
+        "defaultRouteName": "defaultRoute",
+        "customData": "[concat('#!/bin/bash\n\n','cloud-enable-rest\n\n','cloud-enable-ssh\n\n')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccountName')]",
+            "apiVersion": "2017-06-01",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "[variables('storageAccountSkuName')]",
+                "tier": "[variables('storageAccountSkuType')]"
+            },
+            "kind": "[variables('storageAccountKind')]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('publicIPAddressName')]",
+            "apiVersion": "2017-06-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('publicIPAddressName2')]",
+            "apiVersion": "2017-06-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+            }
+        },
+                {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('publicIPAddressName3')]",
+            "apiVersion": "2017-06-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+            }
+        },
+        {
+            "apiVersion": "2018-10-01",
+            "type": "Microsoft.Compute/availabilitySets",
+            "name": "[variables('AVsetname')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "properties": {
+                "platformFaultDomainCount": 2,
+                "platformUpdateDomainCount": 5
+            },
+            "sku": {
+                "name": "Aligned"
+            }
+        },
+        {
+            "type": "Microsoft.Compute/images",
+            "apiVersion": "2018-10-01",
+            "name": "[variables('cgfImageName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "storageProfile": {
+                    "osDisk": {
+                        "osType": "Linux",
+                        "osState": "Generalized",
+                        "blobUri": "[parameters('firewallDiskVhdUri')]",
+                        "storageAccountType": "Standard_LRS"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('virtualNetworkName')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('fwSubnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('fwSubnetPrefix')]"
+                        }
+                    },
+                    {
+                        "name": "[variables('fwSubnetName2')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('fwSubnetPrefix2')]"
+                        }
+                    },
+                    {
+                        "name": "[variables('fwSubnetName3')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('fwSubnetPrefix3')]"
+                        }
+                    },
+                    {
+                        "name": "[variables('clientSubnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('clientSubnetPrefix')]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[variables('fwNicName')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+            ],
+            "properties": {
+                "primary": true,
+                "enableAcceleratedNetworking": false,
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('fwPrivateIP')]",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName')),'/subnets/',variables('fwSubnetName'))]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[variables('fwNicName2')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName2'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+            ],
+            "properties": {
+                "primary": false,
+                "enableAcceleratedNetworking": false,
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig2",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('fwPrivateIP2')]",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName2'))]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName')),'/subnets/',variables('fwSubnetName2'))]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+         {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[variables('fwNicName3')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName2'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+            ],
+            "properties": {
+                "primary": false,
+                "enableAcceleratedNetworking": false,
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig3",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('fwPrivateIP3')]",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName3'))]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName')),'/subnets/',variables('fwSubnetName3'))]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[variables('routeTableName')]",
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2018-08-01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {
+                "routes": [
+                    {
+                        "id": "[variables('defaultRouteName')]",
+                        "properties": {
+                            "addressPrefix": "0.0.0.0/0",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "[parameters('fwPrivateIP')]"
+                        },
+                        "name": "[variables('defaultRouteName')]"
+                    }
+                ],
+                "disableBgpRoutePropagation": true
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('vmFWName')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces/', variables('fwNicName'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces/', variables('fwNicName2'))]",
+                 "[resourceId('Microsoft.Network/networkInterfaces/', variables('fwNicName3'))]",
+                "[resourceId('Microsoft.Compute/availabilitySets/', variables('AVsetname'))]"
+            ],
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('AVsetname'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[variables('vmFWName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "customData": "[base64(variables('customData'))]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "id": "[resourceId('Microsoft.Compute/images', variables('cgfImageName'))]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "caching": "None",
+                        "osType": "Linux",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fwNicName'))]",
+                             "properties": {
+                                "primary": true
+                                }
+                        },
+                         {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fwNicName2'))]",
+                              "properties": {
+                                    "primary": false
+                                }
+                        },
+                          {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fwNicName3'))]",
+                              "properties": {
+                                    "primary": false
+                                }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}
