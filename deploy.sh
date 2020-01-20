@@ -13,8 +13,8 @@ usage() { echo "Usage: $0 -i <subscriptionId> -g <resourceGroupName> -n <deploym
 
 #declare subscriptionId="bde58b49-9951-466e-90e2-592c0920ce77"
 declare subscriptionId="4b7cd783-c55a-4319-a0d7-a3a68ef112b1"
-declare resourceGroupName="mz-vWAN-CGF-A"
-declare deploymentName="mz-vWAN-CGF-A"
+declare resourceGroupName="student00-rg"
+declare deploymentName="student00-cgf"
 #declare resourceGroupLocation="eastus2euap"
 declare resourceGroupLocation="westeurope"
 

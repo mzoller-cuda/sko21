@@ -6,13 +6,13 @@
             "value": "itsrootanyway"
         },
         "adminPassword": {
-            "value": "Ziosch17$Ziosch17$"
+            "value": "learncgfatsko21"
         },
         "firewallDiskVhdUri": {
             "value": "https://cudacgfbuild2019.blob.core.windows.net/vhds/CudaCGFHourly-v802-0119-20191217.vhd"
         },
         "firewallName" :{
-            "value" : "CGF802"
+            "value" : "student00-cgf"
         },
         "addressPrefix": {
             "value": "10.200.0.0/16"
