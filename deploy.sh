@@ -13,10 +13,11 @@ usage() { echo "Usage: $0 -i <subscriptionId> -g <resourceGroupName> -n <deploym
 
 #declare subscriptionId="bde58b49-9951-466e-90e2-592c0920ce77"
 declare subscriptionId="4b7cd783-c55a-4319-a0d7-a3a68ef112b1"
-declare resourceGroupName="sko-student-"
-declare deploymentName="sko-student-cgf-"
+declare resourceGroupName="sko-student"
+declare deploymentName="sko-student-cgf"
 #declare resourceGroupLocation="eastus2euap"
 declare resourceGroupLocation="westeurope"
+#declare resourceGroupLocation="westus2"
 
 # Initialize parameters specified from command line
 while getopts ":i:g:n:l:" arg; do
