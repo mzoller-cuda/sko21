@@ -9,13 +9,6 @@
                 "description": "Root password for the Virtual Machine."
             }
         },
-        "firewallName": {
-            "type": "string",
-            "defaultValue": "student-cgf-XXX",
-            "metadata": {
-                "description": "Name of the firewall - replace XXX with your student number"
-            }
-        },
         "addressPrefix": {
             "type": "string",
             "defaultValue": "10.XX.0.0/16",
@@ -88,35 +81,40 @@
         "adminUsername": "sko21",
 
 
-        "LinuxName" :"LinuxHost",
+        "LinuxName" :"sko-LinuxHost",
         "LinuxVMSize" :"Standard_B2s",
         "ubuntuOSVersion": "18.04-LTS", 
-        "LinuxNicName" : "LinuxNic",
+        "LinuxNicName" : "sko-LinuxNic",
 
+
+        "firewallName": "sko-CGF",
         "CGFvmSize" : "Standard_DS3_v2",
-        
-       
-        "fwNicName": "sko-FwNic",
-        "fwNicName2": "sko-FwNic2",
-        "fwNicName3": "sko-FwNic3",
-        
-        "fwSubnetName": "FWSubnet",
-        "fwSubnetName2": "FWSubnet2",
-        "fwSubnetName3": "FWSubnet3",
-        "clientSubnetName": "ClientSubnet",
-        "storageAccountName": "[concat('mzdiag', uniquestring(resourceGroup().id))]",
+        "storageAccountName": "[concat('sko-diag', uniquestring(resourceGroup().id))]",
         "storageAccountSkuName": "Standard_LRS",
         "storageAccountSkuType": "Premium",
         "storageAccountKind": "Storage",
-        "publicIPAddressName": "myPublicIP",
-        "publicIPAddressName2": "myPublicIP2",
-        "publicIPAddressName3": "myPublicIP3",
-        "publicIPAddressType": "Static",
-        "vmFWName": "[parameters('firewallName')]",
+       
+        "fwNicName": "sko-FwNic1",
+        "fwNicName2": "sko-FwNic2",
+        "fwNicName3": "sko-FwNic3",
+        
+
         "virtualNetworkName": "sko-VNET",
+        "fwSubnetName": "FWSubnetMGMT",
+        "fwSubnetName2": "FWSubnet2",
+        "fwSubnetName3": "FWSubnet3",
+        "clientSubnetName": "ClientSubnet",
+        
+        "publicIPAddressName": "sko-myPublicIP1",
+        "publicIPAddressName2": "sko-myPublicIP2",
+        "publicIPAddressName3": "sko-myPublicIP3",
+        "publicIPAddressType": "Static",
+
         "AVsetname": "sko-cgfAVset",
+
         "routeTableName": "sko-routeTable",
         "defaultRouteName": "defaultRoute",
+        
         "customData": "[concat('#!/bin/bash\n\n','cloud-enable-rest\n\n','cloud-enable-ssh\n\n')]",
         "LinuxcustomData": "[concat('#!/bin/bash\n\n','DEBIAN_FRONTEND=noninteractive\n\n','apt-get update && apt-get -y upgrade\n\n','apt-get install -y iperf\n\n', 'iperf -s -D')]"
     },
@@ -329,7 +327,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[variables('vmFWName')]",
+            "name": "[variables('firewallName')]",
             "apiVersion": "2018-10-01",
             "location": "[variables('location')]",
             "dependsOn": [
@@ -352,7 +350,7 @@
                     "vmSize": "[variables('CGFvmSize')]"
                 },
                 "osProfile": {
-                    "computerName": "[variables('vmFWName')]",
+                    "computerName": "[variables('firewallName')]",
                     "adminUsername": "[variables('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
                     "customData": "[base64(variables('customData'))]"
@@ -365,7 +363,7 @@
                     "version": "latest"
                     },
                     "osDisk": {
-                    "name": "[concat(variables('vmFWName'),'-osdisk')]",
+                    "name": "[concat(variables('firewallName'),'-osdisk')]",
                     "caching": "ReadWrite",
                     "createOption": "FromImage"
                     }
