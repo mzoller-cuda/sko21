@@ -89,7 +89,7 @@
 
         "firewallName": "sko-CGF",
         "CGFvmSize" : "Standard_DS3_v2",
-        "storageAccountName": "[concat('sko-diag', uniquestring(resourceGroup().id))]",
+        "storageAccountName": "[concat('skodiag', uniquestring(resourceGroup().id))]",
         "storageAccountSkuName": "Standard_LRS",
         "storageAccountSkuType": "Premium",
         "storageAccountKind": "Storage",

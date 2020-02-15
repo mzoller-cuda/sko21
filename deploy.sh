@@ -11,13 +11,61 @@ numFirewalls=1
 
 usage() { echo "Usage: $0 -i <subscriptionId> -g <resourceGroupName> -n <deploymentName> -l <resourceGroupLocation>" 1>&2; exit 1; }
 
-#declare subscriptionId="bde58b49-9951-466e-90e2-592c0920ce77"
+declare deploymentName="sko-deployment"
+#####################################################################################################
+# change to match your subscription ID 
+# use "az acount show" to get the subscription ID  
 declare subscriptionId="4b7cd783-c55a-4319-a0d7-a3a68ef112b1"
-declare resourceGroupName="sko-student"
-declare deploymentName="sko-student-cgfXX"
-declare resourceGroupLocation="eastus2euap"
-#declare resourceGroupLocation="westeurope"
-#declare resourceGroupLocation="westus2"
+
+#####################################################################################################
+# change to your resource group. if the resource group doesn't exist we'll create one (if you have sufficient permissions)
+declare resourceGroupName="sko-myresourcegroup"
+
+declare resourceGroupLocation="westus2"
+#####################################################################################################
+# You must use the same location your resource group was created in! 
+# Possible location values are -
+# eastus2euap
+# eastasia
+# southeastasia
+# centralus
+# eastus
+# eastus2
+# westus
+# northcentralus
+# southcentralus
+# northeurope
+# westeurope
+# japanwest
+# japaneast
+# brazilsouth
+# australiaeast
+# australiasoutheast
+# southindia
+# centralindia
+# westindia
+# canadacentral
+# canadaeast
+# uksouth
+# ukwest
+# westcentralus
+# westus2
+# koreacentral
+# koreasouth
+# francecentral
+# francesouth
+# australiacentral
+# australiacentral2
+# uaecentral
+# uaenorth
+# southafricanorth
+# southafricawest
+# switzerlandnorth
+# switzerlandwest
+# germanynorth
+# germanywestcentral
+# norwaywest
+# norwayeast
 
 # Initialize parameters specified from command line
 while getopts ":i:g:n:l:" arg; do
