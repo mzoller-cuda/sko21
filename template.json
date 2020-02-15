@@ -39,14 +39,14 @@
         },
          "fwSubnetPrefix3": {
             "type": "string",
-            "defaultValue" :" 10.XX.12.0/24",
+            "defaultValue" :"10.XX.12.0/24",
             "metadata": {
                 "description": "Address prefix for the virtual network"
             }
         },
         "clientSubnetPrefix": {
             "type": "string",
-            "defaultValue": "10.XX.1.0/24",
+            "defaultValue": "10.XX.0.0/24",
             "metadata": {
                 "description": "Address prefix for the virtual network"
             }
@@ -74,7 +74,7 @@
         },
          "LinuxPrivateIP": {
             "type": "string",
-            "defaultValue": "10.XX.0.10",
+            "defaultValue": "10.XX.0.4",
             "metadata": {
                 "description": "Address prefix for the virtual network"
             }
@@ -96,9 +96,9 @@
         "CGFvmSize" : "Standard_DS3_v2",
         
        
-        "fwNicName": "FwNic",
-        "fwNicName2": "FwNic2",
-        "fwNicName3": "FwNic3",
+        "fwNicName": "sko-FwNic",
+        "fwNicName2": "sko-FwNic2",
+        "fwNicName3": "sko-FwNic3",
         
         "fwSubnetName": "FWSubnet",
         "fwSubnetName2": "FWSubnet2",
@@ -113,9 +113,9 @@
         "publicIPAddressName3": "myPublicIP3",
         "publicIPAddressType": "Static",
         "vmFWName": "[parameters('firewallName')]",
-        "virtualNetworkName": "mz-VNET",
-        "AVsetname": "cgfAVset",
-        "routeTableName": "routeTable",
+        "virtualNetworkName": "sko-VNET",
+        "AVsetname": "sko-cgfAVset",
+        "routeTableName": "sko-routeTable",
         "defaultRouteName": "defaultRoute",
         "customData": "[concat('#!/bin/bash\n\n','cloud-enable-rest\n\n','cloud-enable-ssh\n\n')]",
         "LinuxcustomData": "[concat('#!/bin/bash\n\n','DEBIAN_FRONTEND=noninteractive\n\n','apt-get update && apt-get -y upgrade\n\n','apt-get install -y iperf\n\n', 'iperf -s -D')]"
