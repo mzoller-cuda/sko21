@@ -5,6 +5,9 @@
         "adminPassword": {
             "value": "learncgfatSKO21$$"
         },
+        "firewallName":{
+            "value": "sko-CGF-200",
+        },
         "addressPrefix": {
             "value": "10.200.0.0/16"
         },

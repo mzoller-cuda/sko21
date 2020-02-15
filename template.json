@@ -9,6 +9,13 @@
                 "description": "Root password for the Virtual Machine."
             }
         },
+         "firewallName": {
+            "type": "string",
+            "defaultValue" : "sko-CGF-XX",
+            "metadata": {
+                "description": "name of the firewall"
+            }
+        },
         "addressPrefix": {
             "type": "string",
             "defaultValue": "10.XX.0.0/16",
@@ -87,7 +94,6 @@
         "LinuxNicName" : "sko-LinuxNic",
 
 
-        "firewallName": "sko-CGF",
         "CGFvmSize" : "Standard_DS3_v2",
         "storageAccountName": "[concat('skodiag', uniquestring(resourceGroup().id))]",
         "storageAccountSkuName": "Standard_LRS",
@@ -327,7 +333,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[variables('firewallName')]",
+            "name": "[parameters('firewallName')]",
             "apiVersion": "2018-10-01",
             "location": "[variables('location')]",
             "dependsOn": [
@@ -350,7 +356,7 @@
                     "vmSize": "[variables('CGFvmSize')]"
                 },
                 "osProfile": {
-                    "computerName": "[variables('firewallName')]",
+                    "computerName": "[parameters('firewallName')]",
                     "adminUsername": "[variables('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
                     "customData": "[base64(variables('customData'))]"
@@ -363,7 +369,7 @@
                     "version": "latest"
                     },
                     "osDisk": {
-                    "name": "[concat(variables('firewallName'),'-osdisk')]",
+                    "name": "[concat(parameters('firewallName'),'-osdisk')]",
                     "caching": "ReadWrite",
                     "createOption": "FromImage"
                     }
