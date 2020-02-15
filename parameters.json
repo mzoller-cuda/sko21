@@ -2,14 +2,8 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "adminUsername": {
-            "value": "sko"
-        },
         "adminPassword": {
             "value": "learncgfatSKO21$$"
-        },
-        "firewallDiskVhdUri": {
-            "value": "https://cudacgfbuild2019.blob.core.windows.net/vhds/CudaCGFHourly-v802-0119-20191217.vhd"
         },
         "addressPrefix": {
             "value": "10.200.0.0/16"

@@ -14,9 +14,9 @@ usage() { echo "Usage: $0 -i <subscriptionId> -g <resourceGroupName> -n <deploym
 #declare subscriptionId="bde58b49-9951-466e-90e2-592c0920ce77"
 declare subscriptionId="4b7cd783-c55a-4319-a0d7-a3a68ef112b1"
 declare resourceGroupName="sko-student"
-declare deploymentName="sko-student-cgf"
-#declare resourceGroupLocation="eastus2euap"
-declare resourceGroupLocation="westeurope"
+declare deploymentName="sko-student-cgfXX"
+declare resourceGroupLocation="eastus2euap"
+#declare resourceGroupLocation="westeurope"
 #declare resourceGroupLocation="westus2"
 
 # Initialize parameters specified from command line
@@ -76,7 +76,7 @@ if [ ! -f "$templateFilePath" ]; then
 fi
 
 #parameter file path without the json extension
-parametersFilePath="parameters_fw"
+parametersFilePath="parameters"
 
 
 # iterate to make the numbering of the parameter files start with 1
@@ -87,8 +87,8 @@ counter=1
 
 	while [ $counter -ne $numFirewalls ]
 	do
-		echo "Checking for parameter files for firewall $counter ... "
-		if [ ! -f "$parametersFilePath$counter.json" ]; then
+		echo "Checking for parameter file ... "
+		if [ ! -f "$parametersFilePath.json" ]; then
 			echo "$parametersFilePath not found"
 			exit 1
 		fi
@@ -118,15 +118,15 @@ counter=1
 
 	while [ $counter -ne $numFirewalls ]
 	do
-		echo "Checking for resource group $counter"
-		az group show --name $resourceGroupName$counter 1> /dev/null
+		echo "Checking for resource group"
+		az group show --name $resourceGroupName 1> /dev/null
 
 		if [ $? != 0 ]; then
-			echo "Resource group with name" $resourceGroupName$counter "could not be found. Creating new resource group..."
+			echo "Resource group with name" $resourceGroupName "could not be found. Creating new resource group..."
 			#set -e
 			(
 				set -x
-				az group create --name $resourceGroupName$counter --location $resourceGroupLocation 1> /dev/null
+				az group create --name $resourceGroupName --location $resourceGroupLocation 1> /dev/null
 			)
 			else
 			echo "Using existing resource group..."
@@ -135,21 +135,13 @@ counter=1
 	done
 
 #Start deployment
-echo "Starting firewall deployments ... "
-(
-	counter=1
-	while [ $counter -ne $numFirewalls ]
-	do
-		#set -x
-		echo "Deploying $counter firewall"
-		az group deployment create --name "$deploymentName$counter" --resource-group "$resourceGroupName$counter" --template-file "$templateFilePath" --parameters "$parametersFilePath$counter.json" --no-wait 
-		((counter++))
-	done
-	
-)
 
-if [ $?  == 0 ];
+echo "Deploying firewall $deploymentName"
+az group deployment create --name "$deploymentName" --resource-group "$resourceGroupName" --template-file "$templateFilePath" --parameters "$parametersFilePath.json" --no-wait 
+
+
+ if [ $?  == 0 ];
  then
-	echo "The firewall deployments have successfully been started... "
-fi
+	echo "The firewall deployment has successfully been started... "
+ fi
 
