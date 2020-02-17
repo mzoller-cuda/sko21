@@ -122,7 +122,7 @@
         "defaultRouteName": "defaultRoute",
         
         "customData": "[concat('#!/bin/bash\n\n','cloud-enable-rest\n\n','cloud-enable-ssh\n\n')]",
-        "LinuxcustomData": "[concat('#!/bin/bash\n\n','DEBIAN_FRONTEND=noninteractive\n\n','apt-get update && apt-get -y upgrade\n\n','apt-get install -y iperf\n\n', 'iperf -s -D')]"
+        "LinuxcustomData": "[concat('#!/bin/bash\n\n','DEBIAN_FRONTEND=noninteractive\n\n','apt-get update\n','apt-get install -y iperf\n\n', 'iperf -s -D')]"
     },
     "resources": [
         {

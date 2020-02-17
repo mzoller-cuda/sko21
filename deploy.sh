@@ -127,6 +127,10 @@ fi
 parametersFilePath="parameters"
 
 
+# accept the terms & conditons for the BYOL CGF
+echo "Accepting Terms & Conditions for BYOL CloudGen Firewall" 
+az vm image terms accept --plan byol --offer barracuda-ng-firewall --publish barracudanetworks
+
 # iterate to make the numbering of the parameter files start with 1
 ((numFirewalls++))
 
