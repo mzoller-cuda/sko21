@@ -78,7 +78,15 @@
             "metadata": {
                 "description": "Address prefix for the virtual network"
             }
+        },
+        "roleNameGuid": {
+            "type": "string",
+            "defaultValue": "[newGuid()]",
+            "metadata": {
+                "description": "A new GUID used to identify the role assignment"
         }
+}
+
     },
     "variables": {
         "imagePublisher": "barracudanetworks",
@@ -334,6 +342,9 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('firewallName')]",
+                "identity": {
+                "type": "SystemAssigned"
+            },
             "apiVersion": "2018-10-01",
             "location": "[variables('location')]",
             "dependsOn": [
@@ -403,6 +414,18 @@
                     }
                 }
             }
+        },
+           {                   
+            "type": "Microsoft.Authorization/roleAssignments",
+            "name": "[parameters('roleNameGuid')]",
+            "apiVersion" :"2017-09-01",
+            "properties": {
+                "roleDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                "principalId": "[reference(parameters('firewallName'), '2018-06-01', 'Full').identity.principalId]"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('firewallName'))]"
+            ]
         },
 
   {
