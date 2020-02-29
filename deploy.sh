@@ -19,7 +19,7 @@ declare subscriptionId="4b7cd783-c55a-4319-a0d7-a3a68ef112b1"
 
 #####################################################################################################
 # change to your resource group. if the resource group doesn't exist we'll create one (if you have sufficient permissions)
-declare resourceGroupName="sko-myresourcegroup2"
+declare resourceGroupName="sko-myresourcegroup"
 
 declare resourceGroupLocation="westus2"
 #####################################################################################################
