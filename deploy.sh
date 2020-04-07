@@ -15,7 +15,16 @@ declare deploymentName="sko-deployment"
 #####################################################################################################
 # change to match your subscription ID 
 # use "az acount show" to get the subscription ID  
-declare subscriptionId="4b7cd783-c55a-4319-a0d7-a3a68ef112b1"
+declare subscriptionId=""
+
+# CGF PM subscription
+# declare subscriptionId="4b7cd783-c55a-4319-a0d7-a3a68ef112b1"
+# EMEA SE subscription
+# declare subscriptionId=""
+# APAC SE subscription
+# declare subscriptionId=""
+# US SE subscription
+# declare subscriptionId=""
 
 #####################################################################################################
 # change to your resource group. if the resource group doesn't exist we'll create one (if you have sufficient permissions)
@@ -128,8 +137,8 @@ parametersFilePath="parameters"
 
 
 # accept the terms & conditons for the BYOL CGF
-echo "Accepting Terms & Conditions for BYOL CloudGen Firewall" 
-az vm image terms accept --plan byol --offer barracuda-ng-firewall --publish barracudanetworks
+#echo "Accepting Terms & Conditions for BYOL CloudGen Firewall" 
+#az vm image terms accept --plan byol --offer barracuda-ng-firewall --publish barracudanetworks
 
 # iterate to make the numbering of the parameter files start with 1
 ((numFirewalls++))
